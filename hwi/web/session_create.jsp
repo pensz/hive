@@ -21,30 +21,33 @@
 <jsp:forward page="/authorize.jsp" />
 <% } %>
 
-<% HWISessionManager hs = (HWISessionManager) application.getAttribute("hs"); %>
+<%
+    HWISessionManager hs = (HWISessionManager) application
+            .getAttribute("hs");
 
-<% String sessionName=request.getParameter("sessionName"); %>
-<% String message = null; %>
+    String sessionName = request.getParameter("sessionName");
+    String message = null;
 
-<% 
-	if (sessionName != null){
-		if (sessionName.equals("")){
-			message="This is not a valid session name";
-		} else {
-			HWISessionItem item= hs.findSessionItemByName(auth, sessionName);
-			if (item!=null){
-				message="This name is already in use";
-			} else {
-				hs.createSession(auth,sessionName);
-				RequestDispatcher rd = application.getRequestDispatcher("/session_manage.jsp");
-				rd.forward(request,response);
-			}
-		}
-	}
+    if (sessionName != null) {
+        if (sessionName.equals("")) {
+            message = "This is not a valid session name";
+        } else {
+            HWISessionItem item = hs.findSessionItemByName(auth,
+                    sessionName);
+            if (item != null) {
+                message = "This name is already in use";
+            } else {
+                hs.createSession(auth, sessionName);
+                RequestDispatcher rd = application
+                        .getRequestDispatcher("/session_manage.jsp");
+                rd.forward(request, response);
+            }
+        }
+    }
 
-	if (sessionName == null){
-		sessionName="";
-	}
+    if (sessionName == null) {
+        sessionName = "";
+    }
 %>
 <!DOCTYPE html>
 <html>

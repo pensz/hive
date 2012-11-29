@@ -25,41 +25,41 @@
 <% if (auth==null) { %>
 	<jsp:forward page="/authorize.jsp" />
 <% } %>
-<% String sessionName=request.getParameter("sessionName"); %>
-<% HWISessionItem sess = hs.findSessionItemByName(auth,sessionName); %>
-<% String message=null; %>
-<% 
-	String errorFile=request.getParameter("errorFile");
-	String resultFile=request.getParameter("resultFile");
-	String query = request.getParameter("query");
-	String silent = request.getParameter("silent");
-	String start = request.getParameter("start");
-%>
-<% 
-  if (request.getParameter("start")!=null ){ 
-    if ( sess.getStatus()==HWISessionItem.WebSessionItemStatus.READY){
-      sess.setErrorFile(errorFile);
-      sess.setResultFile(resultFile);
-      sess.clearQueries();
-      for (String q : query.split(";") ){
-        sess.addQuery(q);
-      }
-      if (query.length()==0){
-        message="You did not specify a query";
-        start="NO";
-      }
-      if (silent.equalsIgnoreCase("YES") )
-	sess.setSSIsSilent(true);
-      else
-	sess.setSSIsSilent(false);
-		   
-	message="Changes accepted.";
-	if (start.equalsIgnoreCase("YES") ){
-	  sess.clientStart();
-          message="Session is set to start.";
-	}
-      }
-  } 
+<%
+    String sessionName = request.getParameter("sessionName");
+    HWISessionItem sess = hs.findSessionItemByName(auth, sessionName);
+    String message = null;
+
+    String errorFile = request.getParameter("errorFile");
+    String resultFile = request.getParameter("resultFile");
+    String query = request.getParameter("query");
+    String silent = request.getParameter("silent");
+    String start = request.getParameter("start");
+
+    if (request.getParameter("start") != null) {
+        if (sess.getStatus() == HWISessionItem.WebSessionItemStatus.READY) {
+            sess.setErrorFile(errorFile);
+            sess.setResultFile(resultFile);
+            sess.clearQueries();
+            for (String q : query.split(";")) {
+                sess.addQuery(q);
+            }
+            if (query.length() == 0) {
+                message = "You did not specify a query";
+                start = "NO";
+            }
+            if (silent.equalsIgnoreCase("YES"))
+                sess.setSSIsSilent(true);
+            else
+                sess.setSSIsSilent(false);
+
+            message = "Changes accepted.";
+            if (start.equalsIgnoreCase("YES")) {
+                sess.clientStart();
+                message = "Session is set to start.";
+            }
+        }
+    }
 %>
 <!DOCTYPE html>
 <html>

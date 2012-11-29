@@ -59,7 +59,6 @@ import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsDesc;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.ConfigValSecurityException;
-import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -87,6 +86,7 @@ import org.apache.hadoop.hive.metastore.api.Type;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.UnknownPartitionException;
 import org.apache.hadoop.hive.metastore.api.UnknownTableException;
+import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.metastore.events.AddPartitionEvent;
 import org.apache.hadoop.hive.metastore.events.AlterPartitionEvent;
 import org.apache.hadoop.hive.metastore.events.AlterTableEvent;
@@ -393,7 +393,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     private void createDefaultDB_core(RawStore ms) throws MetaException, InvalidObjectException {
       try {
+        System.out.println("hahaha");
         ms.getDatabase(DEFAULT_DATABASE_NAME);
+        System.out.println("hahaha end end");
       } catch (NoSuchObjectException e) {
         ms.createDatabase(
             new Database(DEFAULT_DATABASE_NAME, DEFAULT_DATABASE_COMMENT,

@@ -259,6 +259,10 @@ public class ObjectStore implements RawStore, Configurable {
 
   private static PersistenceManagerFactory getPMF() {
     if (pmf == null) {
+      System.out.println("----------prop---------------");
+      System.out.println(prop.toString());
+      System.out.println("----------prop---------------");
+
       pmf = JDOHelper.getPersistenceManagerFactory(prop);
       DataStoreCache dsc = pmf.getDataStoreCache();
       if (dsc != null) {
@@ -421,8 +425,12 @@ public class ObjectStore implements RawStore, Configurable {
     boolean commited = false;
     try {
       openTransaction();
+      System.out.println("name:" + name);
       mdb = getMDatabase(name);
       commited = commitTransaction();
+      System.out.println("name ok :" + name);
+    } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       if (!commited) {
         rollbackTransaction();

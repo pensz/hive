@@ -19,11 +19,12 @@
   <li class="nav-header">User</li>
   <li><a href="index.jsp"><i class="icon-home"></i> Home</a></li>
   <li><a href="authorize.jsp"><i class="icon-lock"></i> Authorize</a></li>
+  <li class="nav-header">Query</li>
+  <li><a href="query_create.jsp"><i class="icon-user"></i> Create Query</a></li>
+  <li><a href="query_list.jsp"><i class="icon-search"></i> My Querys</a></li>
+  <li><a href="query_list.jsp?my=1"><i class="icon-search"></i> All Querys</a></li>
   <li class="nav-header">Database</li>
   <li><a href="show_databases.jsp"><i class="icon-search"></i> Browse Schema</a></li>
-  <li class="nav-header">Sessions</li>
-  <li><a href="session_create.jsp"><i class="icon-user"></i> Create Session</a></li>
-  <li><a href="session_list.jsp"><i class="icon-search"></i> List Sessions</a></li>
   <li class="divider"></li>
   <li class="nav-header">Diagnostics</li>
   <li><a href="diagnostics.jsp"><i class="icon-cog"></i> Diagnostics</a></li>
