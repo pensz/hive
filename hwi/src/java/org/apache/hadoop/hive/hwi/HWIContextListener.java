@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * After getting a contextInitialized event this component starts an instance of
  * the HiveSessionManager.
- * 
+ *
  */
 public class HWIContextListener implements javax.servlet.ServletContextListener {
 
@@ -38,7 +38,7 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
    * The Hive Web Interface manages multiple hive sessions. This event is used
    * to start a Runnable, HiveSessionManager as a thread inside the servlet
    * container.
-   * 
+   *
    * @param sce
    *          An event fired by the servlet context on startup
    */
@@ -57,7 +57,7 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
    * When the Hive Web Interface is closing we locate the Runnable
    * HiveSessionManager and set it's internal goOn variable to false. This
    * should allow the application to gracefully shutdown.
-   * 
+   *
    * @param sce
    *          An event fired by the servlet context on context shutdown
    */

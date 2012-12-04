@@ -68,6 +68,25 @@
       <compilerarg line="${javac.args} ${javac.args.warnings}" />
       <classpath refid="classpath"/>
     </javac>
+
+    <taskdef name="datanucleusenhancer"
+                classname="org.datanucleus.enhancer.tools.EnhancerTask">
+       <classpath refid="classpath"/>
+    </taskdef>
+
+    <datanucleusenhancer
+        dir="${base.dir}" failonerror="true" verbose="true" fork="true">
+        <fileset dir="${src.dir}">
+            <include name="**/*.jdo"/>
+        </fileset>
+	    <classpath>
+          <path refid="classpath"/>
+          <pathelement path="${build.dir}/classes/"/>
+	    </classpath>
+	    <jvmarg line="-Dlog4j.configuration=${basedir}/../conf/hive-log4j.properties"/>
+    </datanucleusenhancer>
   </target>
+
+
 
 </project>

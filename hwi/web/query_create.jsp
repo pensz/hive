@@ -14,12 +14,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 --%>
-<%@ page import="org.apache.hadoop.hive.hwi.*"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.TimeZone"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat" %>
+<%@page import="com.sun.org.apache.bcel.internal.generic.NEW"%>
+<%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
+<%@page import="org.apache.hadoop.hive.hwi.*"%>
+<%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
+<%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
 <%@ page errorPage="error_page.jsp"%>
 <%
-    HWISessionManager hs = (HWISessionManager) application
-            .getAttribute("hs");
-
     
     String action = request.getParameter("action");
     
@@ -28,10 +34,34 @@
         String queryName = request.getParameter("queryName");
         String query = request.getParameter("query");
         String callback = request.getParameter("callback");
+        String description = "";
+        String errorMsg = "";
+        String resultLocation = "";
         
-        if (queryName != null && "".equals(queryName)) {
-               queryName = "new_query_name";
+        Date created = Calendar.getInstance(TimeZone.getDefault()).getTime();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        
+        if (queryName == null || "".equals(queryName)) {
+            queryName = sf.format(created);
         }
+        
+        HiveConf hiveConf = new HiveConf(SessionState.class);
+        QueryStore qs = new QueryStore(hiveConf);
+        
+        MQuery mquery = new MQuery();
+        mquery.setCallback(callback);
+        mquery.setCreated(created);
+        mquery.setDescription(description);
+        mquery.setErrorMsg(errorMsg);
+        mquery.setName(queryName);
+        mquery.setQuery(query);
+        mquery.setResultLocation(resultLocation);
+        mquery.setStatus(MQuery.Status.INITED);
+        mquery.setUserId("userid");
+        mquery.setUpdated(created);
+        
+        qs.insertQuery(mquery);
+        
 			/* HWISessionItem item = hs.findSessionItemByName(auth,
 			        sessionName);
 			if (item != null) {
@@ -39,16 +69,15 @@
 			} else {
 			    hs.createSession(auth, sessionName);
 			} */
-			String queryId = "";
-		    RequestDispatcher rd = application
-		            .getRequestDispatcher("/session_manage.jsp?id=" + queryId);
-		    rd.forward(request, response);
+	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
+	    //rd.forward(request, response);
+	    response.sendRedirect("query_manage.jsp?id=" + mquery.getId());
     }
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hive Web Interface-Create a Hive Session</title>
+<title>Hive Web Interface-Create a Hive Query</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body style="padding-top: 60px;">

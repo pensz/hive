@@ -1,8 +1,12 @@
 package org.apache.hadoop.hive.hwi.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class MQuery {
+
+  public enum Status {INITED, RUNNING, FINISHED, CANCELLED, FAILED, SYNTAXERROR};
+
+  private Integer id;
 
   private String name;
 
@@ -10,7 +14,7 @@ public class MQuery {
 
   private String resultLocation;
 
-  private String status;
+  private Status status;
 
   private String errorMsg;
 
@@ -48,11 +52,11 @@ public class MQuery {
     this.resultLocation = resultLocation;
   }
 
-  public String getStatus() {
+  public Status getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
 
@@ -102,6 +106,14 @@ public class MQuery {
 
   public void setUpdated(Date updated) {
     this.updated = updated;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
   }
 
 }

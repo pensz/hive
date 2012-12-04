@@ -28,18 +28,18 @@
 <jdo>  
   <package name="org.apache.hadoop.hive.hwi.model">  
   
-    <class name="MQuery" identity-type="datastore" table="QUERYS" detachable="true">  
-      <datastore-identity>
-        <column name="QUERY_ID"/>
-      </datastore-identity>
+    <class name="MQuery" identity-type="application" table="QUERYS" detachable="true">
+      
+      <field name="id" primary-key="true" value-strategy="identity">
+        <column name="ID" />
+      </field>
       
       <field name="name">  
         <column name="NAME" length="128" jdbc-type="VARCHAR"/>
-        <index name="UniqueDatabase" unique="true"/>
       </field>
       
       <field name="query">  
-        <column name="NAME" length="128" jdbc-type="VARCHAR" allows-null="false" />
+        <column name="QUERY" length="128" jdbc-type="VARCHAR" allows-null="false" />
       </field>
       
       <field name="resultLocation">

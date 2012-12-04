@@ -33,10 +33,11 @@ public class TestRunHWIServer {
     webServer = ShimLoader.getJettyShims().startServer("0.0.0.0", 9999);
 
     System.out.println("use war file: " + warFile.toString());
-    webServer.addWar(warFile.toString(), "/hwi");
+    webServer.addWar("hwi/web/", "/hwi");
 
     webServer.start();
     webServer.join();
+
 
   }
 

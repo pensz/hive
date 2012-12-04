@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * as a facade, as jsp clients can not create a Hive Session directly. Hive
  * Sessions are long lived, unlike a traditional Query and Block system clients
  * set up the query to be started with an instance of this class.
- * 
+ *
  */
 public class HWISessionManager implements Runnable {
 
@@ -54,7 +54,7 @@ public class HWISessionManager implements Runnable {
    * from the collection. Currently we are using a sleep. A wait/notify could be
    * implemented. Queries will run for a long time, a one second wait on start
    * will not be noticed.
-   * 
+   *
    */
   public void run() {
     l4j.debug("Entered run() thread has started");
@@ -83,6 +83,8 @@ public class HWISessionManager implements Runnable {
         l4j.error("Could not sleep ", ex);
       }
     } // end while
+
+    System.out.println("xxxxxxxxxxxx-----------------");
     l4j.debug("goOn is false. Loop has ended.");
     // Cleanup used here to stop all threads
     synchronized (items) {
@@ -123,7 +125,7 @@ public class HWISessionManager implements Runnable {
    * Rather then return the actual items we return a list copies. This enforces
    * our HWISessionManager by preventing the ability of the client(jsp) to
    * create SessionItems.
-   * 
+   *
    * @return A set of SessionItems this framework manages
    */
   public ArrayList<HWISessionItem> findAllSessionItems() {
@@ -138,7 +140,7 @@ public class HWISessionManager implements Runnable {
    * Here we handle creating the SessionItem, we do this for the JSP client
    * because we need to set parameters the client is not aware of. One such
    * parameter is the command line arguments the server was started with.
-   * 
+   *
    * @param a
    *          Authenticated user
    * @param sessionName
@@ -181,7 +183,7 @@ public class HWISessionManager implements Runnable {
 
   /**
    * Helper method useful when you know the session name you wish to reference.
-   * 
+   *
    * @param sessionname
    * @return A SessionItem matching the sessionname or null if it does not
    *         exists
@@ -201,7 +203,7 @@ public class HWISessionManager implements Runnable {
 
   /**
    * Used to list all users that have at least one session.
-   * 
+   *
    * @return keySet of items all users that have any sessions
    */
   public Set<HWIAuth> findAllUsersWithSessions() {
@@ -210,7 +212,7 @@ public class HWISessionManager implements Runnable {
 
   /**
    * Used to list all the sessions of a user.
-   * 
+   *
    * @param auth
    *          the user being enquired about
    * @return all the sessions of that user

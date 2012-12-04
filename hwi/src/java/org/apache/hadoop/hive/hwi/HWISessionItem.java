@@ -297,7 +297,9 @@ public class HWISessionItem implements Runnable, Comparable<HWISessionItem> {
         }
 
         try {
+          System.out.println("wait begin");
           runnable.wait();
+          System.out.println("wait end");
         } catch (InterruptedException e) {
           l4j.error("in wait() state ", e);
         }
@@ -332,6 +334,7 @@ public class HWISessionItem implements Runnable, Comparable<HWISessionItem> {
       String cmd_trimmed = cmd.trim();
       String[] tokens = cmd_trimmed.split("\\s+");
       String cmd_1 = cmd_trimmed.substring(tokens[0].length()).trim();
+
 
       CommandProcessor proc = CommandProcessorFactory.get(tokens[0]);
       if (proc != null) {
