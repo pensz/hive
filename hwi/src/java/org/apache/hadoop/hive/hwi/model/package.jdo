@@ -47,15 +47,19 @@
       </field>
       
       <field name="status">
-        <column name="STATUS" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="STATUS" length="32" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
       <field name="errorMsg">
         <column name="ERROR_MSG" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
+      <field name="errorCode">
+        <column name="ERROR_CODE" jdbc-type="INTEGER" allows-null="true"/>
+      </field>
+      
       <field name="description">
-        <column name="DESC" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="DESC" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
       <field name="callback">
@@ -67,11 +71,11 @@
       </field>
       
       <field name="created">
-        <column name="CREATED" length="32" jdbc-type="VARCHAR" allows-null="false"/>
+        <column name="CREATED" jdbc-type="TIMESTAMP" allows-null="false"/>
       </field>
       
       <field name="updated">
-        <column name="UPDATED" length="32" jdbc-type="VARCHAR" allows-null="false"/>
+        <column name="UPDATED" jdbc-type="TIMESTAMP" allows-null="false"/>
       </field>
       
     </class>

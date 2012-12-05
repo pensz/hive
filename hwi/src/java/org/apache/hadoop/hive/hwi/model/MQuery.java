@@ -18,6 +18,8 @@ public class MQuery {
 
   private String errorMsg;
 
+  private Integer errorCode;
+
   private String description;
 
   private String callback;
@@ -66,6 +68,14 @@ public class MQuery {
 
   public void setErrorMsg(String errorMsg) {
     this.errorMsg = errorMsg;
+  }
+
+  public Integer getErrorCode() {
+    return errorCode;
+  }
+
+  public void setErrorCode(Integer errorCode) {
+    this.errorCode = errorCode;
   }
 
   public String getDescription() {

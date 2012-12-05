@@ -42,6 +42,7 @@
 	
     String message = null;
     String action = request.getParameter("action");
+    String errmsg = mquery.getErrorMsg();
     
     MQuery.Status status = mquery.getStatus();
     
@@ -84,7 +85,7 @@
 				Session is in QUERY_RUNNING state. Changes are not possible!
 				</div>
 				<% } %>
-
+				
 				<%-- 
           	View JobTracker: <a href="<%= sess.getJobTrackerURI() %>">View Job</a><br>
           	Kill Command: <%= sess.getKillCommand() %>
@@ -113,6 +114,7 @@
                             <label class="control-label" for="fldquery">Query</label>
                             <div class="controls">
                                 <textarea id="fldquery" name="query"><%= query %></textarea>
+	                            <% if (errmsg != null && !"".equals(errmsg)) { %>
                             </div>
                         </div>
 						
@@ -120,7 +122,6 @@
 							<label class="control-label" for="fldresultLocation">Result Location</label>
 							<div class="controls">
 								<input id="fldresultLocation" type="text" name="resultLocation" value="<%= resultLocation %>" />
-								<a href="/hwi/query_result.jsp?id=<%=id%>">View Result</a>
 							</div>
 						</div>
 
@@ -143,8 +144,11 @@
 					<h3>Query Return Message</h3>
 					<p>
 					</p>
+					<div class="alert alert-error">
+                    Error : <%= errmsg %>
+                    </div>
+                    <% } %>
 
-					
 					<div class="form-actions">
 					    <input type="hidden" name="action" value="update_query" />
 						<button type="submit" class="btn btn-primary">Submit</button>

@@ -18,6 +18,9 @@
 
 package org.apache.hadoop.hive.hwi;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -43,13 +46,16 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
    *          An event fired by the servlet context on startup
    */
   public void contextInitialized(ServletContextEvent sce) {
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
     ServletContext sc = sce.getServletContext();
+
     HWISessionManager hs = new HWISessionManager();
     l4j.debug("HWISessionManager created.");
     Thread t = new Thread(hs);
     t.start();
     l4j.debug("HWISessionManager thread started.");
     sc.setAttribute("hs", hs);
+    sc.setAttribute("exector", executor);
     l4j.debug("HWISessionManager placed in application context.");
   }
 
@@ -64,11 +70,17 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
   public void contextDestroyed(ServletContextEvent sce) {
     ServletContext sc = sce.getServletContext();
     HWISessionManager hs = (HWISessionManager) sc.getAttribute("hs");
+
     if (hs == null) {
       l4j.error("HWISessionManager was not found in context");
     } else {
       l4j.error("HWISessionManager goOn set to false. Shutting down.");
       hs.setGoOn(false);
+    }
+
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) sc.getAttribute("executor");
+    if (executor != null) {
+      executor.shutdown();
     }
   }
 }

@@ -54,6 +54,7 @@ List<MQuery> mquerys = qs.getQuerys();
 							<th>Name</th>
 							<th>Query</th>
 							<th>Status</th>
+							<th>Error</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -64,6 +65,7 @@ List<MQuery> mquerys = qs.getQuerys();
 							<td><%= item.getName() %></td>
 							<td><%= item.getQuery() %></td>
 							<td><%= item.getStatus() %></td>
+							<td><%= item.getErrorMsg() %></td>
 							<td><a href="/hwi/query_manage.jsp?id=<%= item.getId() %>">Manager</a></td>
 						</tr>
 						<% } %>

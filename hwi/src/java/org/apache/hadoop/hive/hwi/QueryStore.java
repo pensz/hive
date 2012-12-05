@@ -159,6 +159,8 @@ public class QueryStore {
     nmquery.setName(mquery.getName());
     nmquery.setCallback(mquery.getCallback());
     nmquery.setQuery(mquery.getQuery());
+    nmquery.setStatus(mquery.getStatus());
+    nmquery.setErrorMsg(mquery.getErrorMsg());
     tx.commit();
   }
 

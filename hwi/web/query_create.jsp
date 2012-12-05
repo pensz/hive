@@ -19,12 +19,13 @@
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat" %>
+<%@page import="java.util.concurrent.ThreadPoolExecutor" %>
 <%@page import="com.sun.org.apache.bcel.internal.generic.NEW"%>
 <%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
 <%@page import="org.apache.hadoop.hive.hwi.*"%>
 <%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
 <%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
-<%@ page errorPage="error_page.jsp"%>
+<%@page errorPage="error_page.jsp"%>
 <%
     
     String action = request.getParameter("action");
@@ -59,6 +60,9 @@
         mquery.setStatus(MQuery.Status.INITED);
         mquery.setUserId("userid");
         mquery.setUpdated(created);
+        
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) application.getAttribute("exector");
+        executor.execute(new QueryWorker(mquery));
         
         qs.insertQuery(mquery);
         
