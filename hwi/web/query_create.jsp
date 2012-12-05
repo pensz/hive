@@ -31,16 +31,12 @@
     String action = request.getParameter("action");
     
     if ("add_query".equals(action)) {
-        String message = null;
         String queryName = request.getParameter("queryName");
         String query = request.getParameter("query");
         String callback = request.getParameter("callback");
-        String description = "";
-        String errorMsg = "";
-        String resultLocation = "";
         
         Date created = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-mm-dd_HH:mm:ss");
         
         if (queryName == null || "".equals(queryName)) {
             queryName = sf.format(created);
@@ -50,21 +46,17 @@
         QueryStore qs = new QueryStore(hiveConf);
         
         MQuery mquery = new MQuery();
-        mquery.setCallback(callback);
-        mquery.setCreated(created);
-        mquery.setDescription(description);
-        mquery.setErrorMsg(errorMsg);
         mquery.setName(queryName);
         mquery.setQuery(query);
-        mquery.setResultLocation(resultLocation);
+        mquery.setCallback(callback);
+        mquery.setCreated(created);
         mquery.setStatus(MQuery.Status.INITED);
         mquery.setUserId("userid");
-        mquery.setUpdated(created);
+        qs.insertQuery(mquery);
         
         ThreadPoolExecutor executor = (ThreadPoolExecutor) application.getAttribute("exector");
         executor.execute(new QueryWorker(mquery));
         
-        qs.insertQuery(mquery);
         
 			/* HWISessionItem item = hs.findSessionItemByName(auth,
 			        sessionName);
@@ -75,7 +67,7 @@
 			} */
 	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
 	    //rd.forward(request, response);
-	    response.sendRedirect("query_manage.jsp?id=" + mquery.getId());
+	    response.sendRedirect("query_info.jsp?id=" + mquery.getId());
     }
 %>
 <!DOCTYPE html>
