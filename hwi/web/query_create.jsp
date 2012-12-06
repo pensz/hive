@@ -49,7 +49,9 @@
         mquery.setName(queryName);
         mquery.setQuery(query);
         mquery.setCallback(callback);
+        mquery.setResultLocation("");
         mquery.setCreated(created);
+        mquery.setUpdated(created);
         mquery.setStatus(MQuery.Status.INITED);
         mquery.setUserId("userid");
         qs.insertQuery(mquery);
