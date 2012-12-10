@@ -1,5 +1,6 @@
 package org.apache.hadoop.hive.hwi;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
@@ -156,17 +158,23 @@ public class QueryStore {
     Transaction tx = pm.currentTransaction();
     tx.begin();
     MQuery nmquery = getById(mquery.getId());
-    nmquery.setName(mquery.getName());
     nmquery.setCallback(mquery.getCallback());
-    nmquery.setQuery(mquery.getQuery());
-    nmquery.setStatus(mquery.getStatus());
+    nmquery.setDescription(mquery.getDescription());
+    nmquery.setErrorCode(mquery.getErrorCode());
     nmquery.setErrorMsg(mquery.getErrorMsg());
+    nmquery.setJobId(mquery.getJobId());
+    nmquery.setName(mquery.getName());
+    nmquery.setQuery(mquery.getQuery());
+    nmquery.setResultLocation(mquery.getResultLocation());
+    nmquery.setStatus(mquery.getStatus());
+    nmquery.setUpdated(Calendar.getInstance(TimeZone.getDefault()).getTime());
     tx.commit();
   }
 
 
   public List<MQuery> getQuerys() {
     Query query = pm.newQuery(MQuery.class);
+    query.setOrdering("id DESC");
     return (List<MQuery>) query.execute();
   }
 

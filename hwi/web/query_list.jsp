@@ -30,43 +30,72 @@ QueryStore qs = new QueryStore(hiveConf);
 List<MQuery> mquerys = qs.getQuerys();
 
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Query List</title>
+<title>All Queries - Hive Web Interface</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body style="padding-top: 60px;">
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
 			</div><!-- span4 -->
-			<div class="span8">
-
-				<h2>Query List</h2>
-
+			<div class="span10">
+				<h4>All Queries</h4>
 				<table class="table table-striped">
 					<thead>
 						<tr>
+						    <th>#</th>
 							<th>Name</th>
 							<th>Query</th>
 							<th>Status</th>
-							<th>Error</th>
-							<th>Action</th>
+							<th>Result</th>
 						</tr>
 					</thead>
 					<tbody>
 						<%-- if ( hs.findAllSessionsForUser(auth)!=null){ --%>
 						<% for (MQuery item: mquerys ) { %>
 						<tr>
-							<td><%= item.getName() %></td>
-							<td><%= item.getQuery() %></td>
-							<td><%= item.getStatus() %></td>
-							<td><%= item.getErrorMsg() %></td>
-							<td><a href="/hwi/query_info.jsp?id=<%= item.getId() %>">Info</a></td>
+						    <td><%= item.getId() %></td>
+							<td><a href="/hwi/query_info.jsp?id=<%= item.getId() %>"><%= item.getName() %></a></td>
+							<td><code><%= item.getQuery() %></code></td>
+							<td>
+							<%
+							MQuery.Status status = item.getStatus();
+							String statusClass;
+							
+							switch (status) {
+							case INITED :
+							    statusClass = "label";
+							    break;
+							case FINISHED :
+							    statusClass = "label label-success";
+                                break;
+							case FAILED :
+							    statusClass = "label label-important";
+                                break;
+							case SYNTAXERROR :
+							    statusClass = "label label-warning";
+                                break;
+							case RUNNING :
+							    statusClass = "label label-info";
+                                break;
+                            default :
+                                statusClass = "label label-inverse";
+							}
+							%>
+							<span class="<%= statusClass %>"><%= status %></span>
+							</td>
+							<td>
+							<% if (item.getErrorMsg() != null) { %>
+							<a error="1" class="btn btn-small" data-content="<%= item.getErrorMsg() %>" data-placement="bottom" rel="popover" href="#" data-original-title="Error">Error</a>
+							<% } else { %>
+							<button result="1" class="btn btn-small" type="button">View result</button>
+							<% } %>
+							</td>
 						</tr>
 						<% } %>
 						<%-- } --%>
@@ -76,5 +105,12 @@ List<MQuery> mquerys = qs.getQuerys();
 		</div><!-- row -->
 	</div><!-- container -->
 </body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function(){
+        $('a[error="1"]').popover();
+});
+</script>
 </html>
 

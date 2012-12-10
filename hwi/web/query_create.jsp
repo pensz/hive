@@ -36,7 +36,7 @@
         String callback = request.getParameter("callback");
         
         Date created = Calendar.getInstance(TimeZone.getDefault()).getTime();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-mm-dd_HH:mm:ss");
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         
         if (queryName == null || "".equals(queryName)) {
             queryName = sf.format(created);
@@ -53,20 +53,17 @@
         mquery.setCreated(created);
         mquery.setUpdated(created);
         mquery.setStatus(MQuery.Status.INITED);
-        mquery.setUserId("userid");
+        mquery.setResultLocation("");
+        mquery.setUserId("hadoop");
         qs.insertQuery(mquery);
         
+        mquery.setResultLocation("/tmp/" + mquery.getId() + "/");
+        qs.updateQuery(mquery);
+        
+        // submit to threadpool
         ThreadPoolExecutor executor = (ThreadPoolExecutor) application.getAttribute("exector");
         executor.execute(new QueryWorker(mquery));
         
-        
-			/* HWISessionItem item = hs.findSessionItemByName(auth,
-			        sessionName);
-			if (item != null) {
-			    message = "This name is already in use";
-			} else {
-			    hs.createSession(auth, sessionName);
-			} */
 	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
 	    //rd.forward(request, response);
 	    response.sendRedirect("query_info.jsp?id=" + mquery.getId());
@@ -75,17 +72,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hive Web Interface-Create a Hive Query</title>
+<title>Create a Hive Query - Hive Web Interface</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+#fldquery {
+font-family: Menlo,Monaco,"Courier New",monospace;
+}
+</style>
 </head>
 <body style="padding-top: 60px;">
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
-			</div><!-- span4 -->
-			<div class="span8">
+			</div><!-- span2 -->
+			
+			<div class="span10">
 				<form action="" method="post" class="form-horizontal">
 					<fieldset>
 						<legend>Create a Hive Query</legend>
@@ -93,25 +96,24 @@
 						<div class="control-group">
                             <label class="control-label" for="fldquery">Query</label>
                             <div class="controls">
-                            <textarea id="fldquery" name="query" rows="5" cols="20"></textarea>
+                            <textarea id="fldquery" class="input-block-level" name="query" rows="10" cols="20" placeholder="Enter hive query"></textarea>
                             </div>
                         </div>
                         
                         <div class="control-group">
                             <label class="control-label" for="fldquery">Query Name</label>
                             <div class="controls">
-                                <input id="fldquery" type="text" name="queryName"
-                                    value="">
+                                <input id="fldquery" type="text" name="queryName" value="" placeholder="Enter query name" />
                             </div>
                         </div>
-                        
+                        <!-- 
                         <div class="control-group">
                             <label class="control-label" for="fldcallback">Callback</label>
                             <div class="controls">
-                                <input id="fldcallback" type="text" name="callback"
-                                    value="">
+                                <input id="fldcallback" type="text" name="callback" value="" />
                             </div>
                         </div>
+                         -->
 					</fieldset>
 
 					<div class="form-actions">

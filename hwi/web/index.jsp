@@ -17,10 +17,6 @@
 <!DOCTYPE html>
 <%@page errorPage="error_page.jsp"%>
 <%@ page import="org.apache.hadoop.hive.hwi.*"%>
-<% HWIAuth auth = (HWIAuth) session.getAttribute("auth"); %>
-<% if (auth==null) { %>
-<jsp:forward page="/authorize.jsp" />
-<% } %>
 <html>
 <head>
 <title>Hive Web Interface</title>
@@ -30,10 +26,10 @@
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
-			</div><!-- span4 -->
-			<div class="span8">
+			</div><!-- span2 -->
+			<div class="span10">
 				<div class="hero-unit"><h2>Hive Web Interface</h2>
 				<p>The Hive Web Interface (HWI) offers an alternative to the
 					command line interface (CLI). Once authenticated users can start
@@ -41,7 +37,7 @@
 					submit queries and return later to view the status of the query and
 					view any results it produced.</p>
 				</div><!-- hero-unit -->
-			</div><!-- span8 -->
+			</div><!-- span10 -->
 		</div><!-- row -->
 	</div><!-- container -->
 </body>

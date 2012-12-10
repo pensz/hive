@@ -48,13 +48,13 @@
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
-			</div><!-- span4 -->
-			<div class="span8">
-				<h2><%=mquery.getName()%></h2>
+			</div><!-- span2 -->
+			<div class="span10">
+				<h4>Query <%=mquery.getName()%></h4>
 
-				<% if (message != null) {  %>
+				<% if (message != null) { %>
 				<div class="alert alert-info"><%= message %></div>
 				<% } %>
 
@@ -64,34 +64,28 @@
           	 Session Kill: <a href="/hwi/session_kill.jsp?sessionName=<%=sessionName%>"><%=sessionName%></a><br>
           	--%>
 
-			<table>
-			<tbody>
-			<tr>
-				<td>status</td>
-				<td><%= mquery.getStatus() %></td>
-			</tr>
-			<tr>
-				<td>query</td>
-				<td><%= mquery.getQuery() %></td>
-			</tr>
-			<tr>
-				<td>callback</td>
-				<td><%= mquery.getCallback() %></td>
-			</tr>
-			<% if (mquery.getResultLocation() != null && !mquery.getResultLocation().equals("")) {  %>
-			<tr>
-				<td>result</td>
-				<td><%= mquery.getResultLocation() %></td>
-			</tr>
-			<% } %>
-			<% if (mquery.getErrorMsg() != null && !mquery.getErrorMsg().equals("")) {  %>
-			<tr>
-				<td>error</td>
-				<td><%= mquery.getErrorMsg() %></td>
-			</tr>
-			<% } %>
-			</tbody>
-			</table>
+			
+			<dl class="dl-horizontal">
+				<dt>Status</dt>
+				<dd><%= mquery.getStatus() %></dd>
+				
+				<dt>Query</dt>
+				<dd>
+				<pre><%= mquery.getQuery() %></pre>
+				</dd>
+				
+				<dt>Callback</dt>
+				<dd><%= mquery.getCallback() %></dd>
+
+				<dt>Result location</dt>
+				<dd><%= mquery.getResultLocation() %></dd>
+			
+				<dt>Error message</dt>
+				<dd><%= mquery.getErrorMsg() %></dd>
+				
+				<dt>Error code</dt>
+                <dd><%= mquery.getErrorCode() %></dd>
+			</dl>
 				
 			</div><!-- span8 -->
 		</div><!-- row -->
