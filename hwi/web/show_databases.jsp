@@ -39,10 +39,10 @@ org.apache.hadoop.hive.cli.*" %>
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
 			</div><!-- span4 -->
-			<div class="span8">
+			<div class="span10">
 
 				<h2>Database List</h2>
 				<table class="table table-striped">

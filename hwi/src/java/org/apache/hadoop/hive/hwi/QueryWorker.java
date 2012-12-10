@@ -20,6 +20,8 @@ public class QueryWorker implements Runnable {
 
   private final HiveConf hiveConf;
 
+  private SessionState sessionState;
+
   public QueryWorker(MQuery mquery) {
     this.mquery = mquery;
     hiveConf = new HiveConf(SessionState.class);
@@ -31,26 +33,30 @@ public class QueryWorker implements Runnable {
    * @param args
    */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void run() {
-    // TODO Auto-generated method stub
     QueryStore qs = new QueryStore(hiveConf);
 
+    // first, update status to running
     this.mquery.setStatus(MQuery.Status.RUNNING);
-    this.runQuery();
+    qs.updateQuery(this.mquery);
 
+    // run query and update it.
+    this.sessionState = SessionState.start(hiveConf);
+    this.runQuery();
     qs.updateQuery(this.mquery);
   }
 
 
+  /**
+   * run user input queries
+   */
   public void runQuery() {
 
     String name = this.mquery.getName();
-    SessionState ss = SessionState.start(hiveConf);
 
     // expect one return per query
     String queryStr = this.mquery.getQuery();
@@ -58,9 +64,12 @@ public class QueryWorker implements Runnable {
     int querylen = queries.length;
 
     for (int i=0; i<querylen; i++) {
-      String cmd = queries[i];
-      String cmd_trimmed = cmd.trim();
+      String cmd_trimmed = queries[i].trim();
       String[] tokens = cmd_trimmed.split("\\s+");
+
+      if ("select".equalsIgnoreCase(tokens[0])) {
+        cmd_trimmed = "INSERT OVERWRITE DIRECTORY '" + this.mquery.getResultLocation() + "' " + cmd_trimmed;
+      }
 
       CommandProcessor proc = CommandProcessorFactory.get(tokens[0], hiveConf);
       CommandProcessorResponse resp ;
@@ -73,10 +82,9 @@ public class QueryWorker implements Runnable {
           qp.setTryCount(Integer.MAX_VALUE);
 
           try {
-            resp = qp.run(cmd);
+            resp = qp.run(cmd_trimmed);
             errMsg = resp.getErrorMessage();
             errCode = resp.getResponseCode();
-
           } catch (CommandNeedRetryException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -104,7 +112,7 @@ public class QueryWorker implements Runnable {
         }
 
       } else {
-        errMsg = name + " query processor was not found for query " + cmd;
+        errMsg = name + " query processor was not found for query " + cmd_trimmed;
         this.mquery.setErrorMsg(errMsg);
         this.mquery.setStatus(MQuery.Status.FAILED);
         // processor was null
@@ -112,10 +120,7 @@ public class QueryWorker implements Runnable {
       }
     } // end for
 
-    // l4j.debug(getSessionName() + " state is now READY");
-    /*synchronized (runnable) {
-      runnable.notifyAll();
-    }*/
+    l4j.debug(name + " state is now FINISHED");
   }
 
 }

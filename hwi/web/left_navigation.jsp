@@ -18,15 +18,16 @@
 <ul class="nav nav-list">
   <li class="nav-header">User</li>
   <li><a href="index.jsp"><i class="icon-home"></i> Home</a></li>
-  <li><a href="authorize.jsp"><i class="icon-lock"></i> Authorize</a></li>
   <li class="nav-header">Query</li>
   <li><a href="query_create.jsp"><i class="icon-user"></i> Create Query</a></li>
-  <li><a href="query_list.jsp"><i class="icon-search"></i> My Querys</a></li>
-  <li><a href="query_list.jsp?my=1"><i class="icon-search"></i> All Querys</a></li>
+  <li><a href="query_list.jsp"><i class="icon-th-list"></i> All Queries</a></li>
   <li class="nav-header">Database</li>
-  <li><a href="show_databases.jsp"><i class="icon-search"></i> Browse Schema</a></li>
+  <li><a href="show_databases.jsp"><i class="icon-search"></i> Schema</a></li>
   <li class="divider"></li>
-  <li class="nav-header">Diagnostics</li>
+  <li class="nav-header">Help</li>
+  <li><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+UDF" target="_blank">
+  <i class="icon-cog"></i> Manual</a>
+  </li>
   <li><a href="diagnostics.jsp"><i class="icon-cog"></i> Diagnostics</a></li>
 </ul>
 </div><!-- well -->

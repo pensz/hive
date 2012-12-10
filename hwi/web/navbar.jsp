@@ -20,10 +20,10 @@
 			<a class="btn btn-navbar" data-toggle="collapse"
 				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 				class="icon-bar"></span> <span class="icon-bar"></span>
-			</a> <a class="brand" href="#">Hive Web Interface</a>
+			</a> <a class="brand" href="/hwi">Hive Web Interface</a>
 			<div class="nav-collapse">
 				<ul class="nav pull-right">
-					<li><a href="http://hive.apache.org">Link</a></li>
+					<li><a href="http://hive.apache.org">apache hive</a></li>
 				</ul>
 			</div>
 			<!-- /.nav-collapse -->

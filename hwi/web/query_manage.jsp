@@ -70,10 +70,10 @@
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
-			</div><!-- span4 -->
-			<div class="span8">
+			</div><!-- span2 -->
+			<div class="span10">
 				<h2>Manage Query <%=name%></h2>
 
 				<% if (message != null) {  %>

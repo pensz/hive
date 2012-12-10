@@ -28,7 +28,7 @@
 <jdo>  
   <package name="org.apache.hadoop.hive.hwi.model">  
   
-    <class name="MQuery" identity-type="application" table="QUERYS" detachable="true">
+    <class name="MQuery" identity-type="application" table="QUERIES" detachable="true">
       
       <field name="id" primary-key="true" value-strategy="identity">
         <column name="ID" />
