@@ -50,7 +50,7 @@ public class QueryWorker implements Runnable {
   public void runQuery() {
 
     String name = this.mquery.getName();
-    SessionState.start(hiveConf);
+    SessionState ss = SessionState.start(hiveConf);
 
     // expect one return per query
     String queryStr = this.mquery.getQuery();
@@ -76,6 +76,7 @@ public class QueryWorker implements Runnable {
             resp = qp.run(cmd);
             errMsg = resp.getErrorMessage();
             errCode = resp.getResponseCode();
+
           } catch (CommandNeedRetryException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -93,14 +94,21 @@ public class QueryWorker implements Runnable {
             l4j.error(name + " Exception when executing", e);
           }
         }
+
         if (errMsg != null) {
           this.mquery.setErrorMsg(errMsg);
-          this.mquery.setStatus(MQuery.Status.SYNTAXERROR);
+          this.mquery.setErrorCode(errCode);
+          this.mquery.setStatus(MQuery.Status.FAILED);
+        } else {
+          this.mquery.setStatus(MQuery.Status.FINISHED);
         }
+
       } else {
+        errMsg = name + " query processor was not found for query " + cmd;
+        this.mquery.setErrorMsg(errMsg);
+        this.mquery.setStatus(MQuery.Status.FAILED);
         // processor was null
-        l4j.error(name
-            + " query processor was not found for query " + cmd);
+        l4j.error(errMsg);
       }
     } // end for
 
