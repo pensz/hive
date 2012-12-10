@@ -45,6 +45,9 @@ List<MQuery> mquerys = qs.getQuerys();
 			</div><!-- span4 -->
 			<div class="span10">
 				<h4>All Queries</h4>
+				<div>
+				Total : <%= qs.getQueryCount() %>
+				</div>
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -93,7 +96,7 @@ List<MQuery> mquerys = qs.getQuerys();
 							<% if (item.getErrorMsg() != null) { %>
 							<a error="1" class="btn btn-small" data-content="<%= item.getErrorMsg() %>" data-placement="bottom" rel="popover" href="#" data-original-title="Error">Error</a>
 							<% } else { %>
-							<button result="1" class="btn btn-small" type="button">View result</button>
+							<a class="btn btn-small" href="query_result.jsp?id=<%= item.getId() %>" >View result</a>
 							<% } %>
 							</td>
 						</tr>

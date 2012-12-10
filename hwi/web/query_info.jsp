@@ -78,7 +78,12 @@
 				<dd><%= mquery.getCallback() %></dd>
 
 				<dt>Result location</dt>
-				<dd><%= mquery.getResultLocation() %></dd>
+				<dd>
+                <%= mquery.getResultLocation() %>
+                <% if (mquery.getStatus().equals(MQuery.Status.FINISHED)) { %>
+                <a class="btn btn-small" href="query_result.jsp?id=<%= mquery.getId() %>" >View result</a>
+                <% } %>
+				</dd>
 			
 				<dt>Error message</dt>
 				<dd><%= mquery.getErrorMsg() %></dd>
