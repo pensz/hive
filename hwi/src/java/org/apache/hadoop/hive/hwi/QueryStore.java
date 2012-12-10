@@ -172,6 +172,13 @@ public class QueryStore {
   }
 
 
+  public Long getQueryCount() {
+    Query query = pm.newQuery(MQuery.class);
+    query.setResult("COUNT(id)");
+    query.setUnique(true);
+    return (Long) query.execute();
+  }
+
   public List<MQuery> getQuerys() {
     Query query = pm.newQuery(MQuery.class);
     query.setOrdering("id DESC");

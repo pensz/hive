@@ -17,10 +17,17 @@
  * limitations under the License.
  */
 --%>
+<%@page import="java.io.InputStreamReader"%>
+<%@page import="java.io.BufferedReader"%>
+<%@page import="java.io.BufferedInputStream"%>
+<%@page import="org.apache.hadoop.fs.Path"%>
+<%@page import="org.apache.hadoop.fs.FileSystem"%>
 <%@page import="org.apache.hadoop.hive.hwi.*" %>
 <%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
-<%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
+<%@page import="org.apache.hadoop.hive.conf.HiveConf" %>
+<%@page import="org.apache.hadoop.fs.FSDataInputStream"%>
 <%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
+<%@page import="org.apache.hadoop.fs.FileStatus" %>
 <%@page errorPage="error_page.jsp" %>
 <%
     String idStr = request.getParameter("id");
@@ -41,10 +48,11 @@
 	String callback = mquery.getCallback();
 	
     String message = null;
-    String action = request.getParameter("action");
     String errmsg = mquery.getErrorMsg();
     
     MQuery.Status status = mquery.getStatus();
+    
+    
 %>
 <!DOCTYPE html>
 <html>
@@ -56,23 +64,45 @@
     <jsp:include page="/navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row">
-			<div class="span4">
+			<div class="span2">
 				<jsp:include page="/left_navigation.jsp" />
-			</div><!-- span4 -->
-			<div class="span8">
-				<h2><%=name%> Query Result</h2>
+			</div><!-- span2 -->
+			<div class="span10">
+				<h4><%=name%> Query Result</h4>
 
 				<% if (message != null) {  %>
 				<div class="alert alert-info"><%= message %></div>
 				<% } %>
 
-                <% if (status == MQuery.Status.RUNNING) { %>
+                <% if (status == MQuery.Status.FINISHED) {
+                
+                    String temp, resultStr="";
+                    Path rPath = new Path(resultLocation);
+                    FileSystem fs = rPath.getFileSystem(hiveConf);
+                    
+                    if (fs.getFileStatus(rPath).isDir()) {
+                        FileStatus[] fss = fs.listStatus(rPath);
+                        for (FileStatus _fs : fss) {
+                            if (!fs.getFileStatus(_fs.getPath()).isDir()) {
+                                BufferedReader bf = new BufferedReader(new InputStreamReader(fs.open(_fs.getPath())));
+                                
+                                while ((temp = bf.readLine()) != null) {
+                                    resultStr += ( temp.replace('\1', '\t') + "\n");        
+                                }
+                                bf.close();
+                            }
+                        }
+                    }
+                    FileSystem.closeAll();
+                %>
+                <div><pre><%= resultStr %></pre></div>
+                <% } else { %>
 				<div class="alert alert-warning">
-				Session is in QUERY_RUNNING state. Changes are not possible!
+				Session is not in FINISHED status. Result are not exists!
 				</div>
 				<% } %>
 
-			</div><!-- span8 -->
+			</div><!-- span10 -->
 		</div><!-- row -->
 	</div><!-- container -->
 </body>
