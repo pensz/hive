@@ -69,6 +69,8 @@
       <classpath refid="classpath"/>
     </javac>
 
+    <copy file="${src.dir}/org/apache/hadoop/hive/hwi/model/package.jdo" todir="${build.classes}"/>
+
     <taskdef name="datanucleusenhancer"
                 classname="org.datanucleus.enhancer.tools.EnhancerTask">
        <classpath refid="classpath"/>

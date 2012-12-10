@@ -51,7 +51,7 @@
       </field>
       
       <field name="errorMsg">
-        <column name="ERROR_MSG" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="ERROR_MSG" length="400" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
       <field name="errorCode">
@@ -59,11 +59,15 @@
       </field>
       
       <field name="description">
-        <column name="DESC" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="DESC" length="400" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
       <field name="callback">
-        <column name="CALLBACK" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="CALLBACK" length="400" jdbc-type="VARCHAR" allows-null="true"/>
+      </field>
+      
+      <field name="jobId">
+        <column name="JOB_ID" length="400" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       
       <field name="userId">

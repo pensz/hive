@@ -24,6 +24,8 @@ public class MQuery {
 
   private String callback;
 
+  private String jobId;
+
   private String userId;
 
   private Date created;
@@ -124,6 +126,14 @@ public class MQuery {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getJobId() {
+    return jobId;
+  }
+
+  public void setJobId(String jobId) {
+    this.jobId = jobId;
   }
 
 }
