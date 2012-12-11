@@ -56,7 +56,7 @@
         mquery.setUserId("hadoop");
         qs.insertQuery(mquery);
         
-        mquery.setResultLocation("/tmp/" + mquery.getId() + "/");
+        mquery.setResultLocation("/user/hive/result/" + mquery.getId() + "/");
         qs.updateQuery(mquery);
         
         // submit to threadpool

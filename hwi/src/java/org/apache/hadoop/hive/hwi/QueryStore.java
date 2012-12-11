@@ -65,7 +65,6 @@ public class QueryStore {
   }
 
   private void initialize(Properties dsProps) {
-    LOG.info("ObjectStore, initialize called");
     prop = dsProps;
     pm = getPersistenceManager();
     isInitialized = pm != null;
@@ -109,10 +108,6 @@ public class QueryStore {
 
   private static PersistenceManagerFactory getPMF() {
     if (pmf == null) {
-      System.out.println("----------prop---------------");
-      System.out.println(prop.toString());
-      System.out.println("----------prop---------------");
-
       pmf = JDOHelper.getPersistenceManagerFactory(prop);
       DataStoreCache dsc = pmf.getDataStoreCache();
       if (dsc != null) {
@@ -179,6 +174,7 @@ public class QueryStore {
     return (Long) query.execute();
   }
 
+  @SuppressWarnings("unchecked")
   public List<MQuery> getQuerys() {
     Query query = pm.newQuery(MQuery.class);
     query.setOrdering("id DESC");
