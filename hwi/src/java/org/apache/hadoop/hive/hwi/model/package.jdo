@@ -39,7 +39,7 @@
       </field>
       
       <field name="query">  
-        <column name="QUERY" length="128" jdbc-type="VARCHAR" allows-null="false" />
+        <column name="QUERY" length="4000" jdbc-type="VARCHAR" allows-null="false" />
       </field>
       
       <field name="resultLocation">

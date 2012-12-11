@@ -60,11 +60,26 @@ List<MQuery> mquerys = qs.getQuerys();
 					</thead>
 					<tbody>
 						<%-- if ( hs.findAllSessionsForUser(auth)!=null){ --%>
-						<% for (MQuery item: mquerys ) { %>
+						<% for (MQuery item: mquerys ) {
+						    String query = item.getQuery();
+                            String querySummary;
+                            boolean queryCutted = false;
+                            if (query.length() > 50) {
+                                querySummary = query.substring(0, 50);
+                                queryCutted = true;
+                            } else {
+                                querySummary = query;
+                            }
+                        %>
 						<tr>
 						    <td><%= item.getId() %></td>
 							<td><a href="/hwi/query_info.jsp?id=<%= item.getId() %>"><%= item.getName() %></a></td>
-							<td><code><%= item.getQuery() %></code></td>
+							<td>
+                            <code><%= querySummary %></code>
+                            <% if (queryCutted) { %>
+                            <i class="icon-plus-sign" data-content="<%= query %>" data-placement="bottom" rel="popover" href="#" data-original-title="Query"></i>
+                            <% } %>
+                            </td>
 							<td>
 							<%
 							MQuery.Status status = item.getStatus();
@@ -93,11 +108,12 @@ List<MQuery> mquerys = qs.getQuerys();
 							<span class="<%= statusClass %>"><%= status %></span>
 							</td>
 							<td>
-							<% if (item.getErrorMsg() != null) { %>
-							<a error="1" class="btn btn-small" data-content="<%= item.getErrorMsg() %>" data-placement="bottom" rel="popover" href="#" data-original-title="Error">Error</a>
-							<% } else { %>
+                            <% if (MQuery.Status.FINISHED.equals(status)) { %>
 							<a class="btn btn-small" href="query_result.jsp?id=<%= item.getId() %>" >View result</a>
-							<% } %>
+                            <% } else { %>
+							<% if (item.getErrorMsg() != null) { %>
+							<a class="btn btn-small" data-content="<%= item.getErrorMsg() %>" data-placement="bottom" rel="popover" href="#" data-original-title="Error">Error</a>
+							<% }} %>
 							</td>
 						</tr>
 						<% } %>
@@ -112,8 +128,7 @@ List<MQuery> mquerys = qs.getQuerys();
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript">
 $(function(){
-        $('a[error="1"]').popover();
+	$('*[rel="popover"]').popover();
 });
 </script>
 </html>
-
