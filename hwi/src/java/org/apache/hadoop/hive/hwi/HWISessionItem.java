@@ -249,10 +249,10 @@ public class HWISessionItem implements Runnable, Comparable<HWISessionItem> {
 
   /*
    * mapred.job.tracker could be host:port or just local
-   * mapred.job.tracker.http.address could be host:port or just host In some
+   * mapred.job.tracker.http.address could be host:port or just host. In some
    * configurations http.address is set to 0.0.0.0 we are combining the two
    * variables to provide a url to the job tracker WUI if it exists. If hadoop
-   * chose the first available port for the JobTracker HTTP port will can not
+   * chose the first available port for the JobTracker, HTTP port will can not
    * determine it.
    */
   public String getJobTrackerURL(String jobid) throws HWIException {

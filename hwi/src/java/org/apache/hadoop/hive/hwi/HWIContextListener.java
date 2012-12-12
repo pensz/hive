@@ -18,9 +18,6 @@
 
 package org.apache.hadoop.hive.hwi;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -39,24 +36,23 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
 
   /**
    * The Hive Web Interface manages multiple hive sessions. This event is used
-   * to start a Runnable, HiveSessionManager as a thread inside the servlet
+   * to start a Runnable, QueryManager as a thread inside the servlet
    * container.
    *
    * @param sce
    *          An event fired by the servlet context on startup
    */
   public void contextInitialized(ServletContextEvent sce) {
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
     ServletContext sc = sce.getServletContext();
 
-    HWISessionManager hs = new HWISessionManager();
-    l4j.debug("HWISessionManager created.");
-    Thread t = new Thread(hs);
+    QueryManager qm = new QueryManager();
+    l4j.debug("QueryManager created.");
+    Thread t = new Thread(qm);
     t.start();
-    l4j.debug("HWISessionManager thread started.");
-    sc.setAttribute("hs", hs);
-    sc.setAttribute("exector", executor);
-    l4j.debug("HWISessionManager placed in application context.");
+    l4j.debug("QueryManager thread started.");
+    sc.setAttribute("qm", qm);
+
+    l4j.debug("QueryManager placed in application context.");
   }
 
   /**
@@ -69,18 +65,14 @@ public class HWIContextListener implements javax.servlet.ServletContextListener 
    */
   public void contextDestroyed(ServletContextEvent sce) {
     ServletContext sc = sce.getServletContext();
-    HWISessionManager hs = (HWISessionManager) sc.getAttribute("hs");
+    QueryManager qm = (QueryManager) sc.getAttribute("qm");
 
-    if (hs == null) {
-      l4j.error("HWISessionManager was not found in context");
+    if (qm == null) {
+      l4j.error("QueryManager was not found in context");
     } else {
-      l4j.error("HWISessionManager goOn set to false. Shutting down.");
-      hs.setGoOn(false);
+      l4j.error("QueryManager goOn set to false. Shutting down.");
+      qm.setGoOn(false);
     }
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) sc.getAttribute("executor");
-    if (executor != null) {
-      executor.shutdown();
-    }
   }
 }

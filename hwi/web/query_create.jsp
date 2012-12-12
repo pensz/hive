@@ -60,9 +60,9 @@
         mquery.setResultLocation("/user/hive/result/" + mquery.getId() + "/");
         qs.updateQuery(mquery);
         
-        // submit to threadpool
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) application.getAttribute("exector");
-        executor.execute(new QueryWorker(mquery));
+        // submit to querymanager
+        QueryManager qm = (QueryManager) application.getAttribute("qm");
+        qm.submit(mquery);
         
 	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
 	    //rd.forward(request, response);

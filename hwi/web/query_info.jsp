@@ -35,6 +35,11 @@
 	QueryStore qs = new QueryStore(hiveConf);
 	MQuery mquery = qs.getById(id);
 	
+	String[] jobIds = null;
+	if(mquery.getJobId() != null){
+		jobIds = mquery.getJobId().split(";");
+	}
+	
     String message = null;
     
 %>
@@ -77,6 +82,21 @@
 				<dt>Callback</dt>
 				<dd><%= mquery.getCallback() %></dd>
 
+				<dt>JobId</dt>
+				<dd>
+				<% if(mquery.getJobId() != null){ %>
+				
+				<% for(String jobId : jobIds){  %>
+					<% if(!jobId.equals("")){ %>
+					<a href="<%= HWIUtil.getJobTrackerURL(hiveConf, jobId) %>" target="_blank"><%= jobId %></a>
+					<% } %>
+				<% } %>
+				
+				<% }else{ %>
+					null
+				<% } %>
+				</dd>
+				
 				<dt>Result location</dt>
 				<dd>
                 <%= mquery.getResultLocation() %>
