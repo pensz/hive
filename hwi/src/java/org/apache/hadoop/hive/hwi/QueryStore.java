@@ -163,6 +163,8 @@ public class QueryStore {
     nmquery.setResultLocation(mquery.getResultLocation());
     nmquery.setStatus(mquery.getStatus());
     nmquery.setUpdated(Calendar.getInstance(TimeZone.getDefault()).getTime());
+    nmquery.setCpuTime(mquery.getCpuTime());
+    nmquery.setTotalTime(mquery.getTotalTime());
     tx.commit();
   }
 

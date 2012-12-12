@@ -21,6 +21,7 @@
 <%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
 <%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
 <%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
+<%@page import="org.apache.hadoop.hive.ql.exec.Utilities"%>
 <%@page errorPage="error_page.jsp" %>
 <%
     String idStr = request.getParameter("id");
@@ -62,13 +63,6 @@
 				<% if (message != null) { %>
 				<div class="alert alert-info"><%= message %></div>
 				<% } %>
-
-				<%-- 
-          	View JobTracker: <a href="<%= sess.getJobTrackerURI() %>">View Job</a><br>
-          	Kill Command: <%= sess.getKillCommand() %>
-          	 Session Kill: <a href="/hwi/session_kill.jsp?sessionName=<%=sessionName%>"><%=sessionName%></a><br>
-          	--%>
-
 			
 			<dl class="dl-horizontal">
 				<dt>Status</dt>
@@ -110,6 +104,17 @@
 				
 				<dt>Error code</dt>
                 <dd><%= mquery.getErrorCode() %></dd>
+                
+                <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
+                <dt>Cpu Time</dt>
+                <dd><%= Utilities.formatMsecToStr(mquery.getCpuTime()) %></dd>
+                
+                <dt>Total Time</dt>
+                <dd><%= Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
+                
+                <dt>Save Time</dt>
+                <dd><%= Utilities.formatMsecToStr(Math.abs(mquery.getCpuTime() - mquery.getTotalTime())) %></dd>
+                <% } %>
 			</dl>
 				
 			</div><!-- span8 -->

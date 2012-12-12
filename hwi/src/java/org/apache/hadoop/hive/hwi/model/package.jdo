@@ -82,6 +82,13 @@
         <column name="UPDATED" jdbc-type="TIMESTAMP" allows-null="false"/>
       </field>
       
+      <field name="cpuTime">
+        <column name="CPU_TIME" jdbc-type="INTEGER" allows-null="true"/>
+      </field>
+      
+      <field name="totalTime">
+        <column name="TOTAL_TIME" jdbc-type="INTEGER" allows-null="true"/>
+      </field>
     </class>
 
   </package>

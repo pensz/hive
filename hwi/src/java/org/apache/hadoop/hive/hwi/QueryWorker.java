@@ -1,5 +1,8 @@
 package org.apache.hadoop.hive.hwi;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -86,7 +89,13 @@ public class QueryWorker implements Runnable {
           qp.setTryCount(Integer.MAX_VALUE);
 
           try {
+            long start_time = System.currentTimeMillis();
+
             resp = qp.run(cmd_trimmed);
+
+            long end_time = System.currentTimeMillis();
+            mquery.setTotalTime((int) (end_time - start_time));
+
             errMsg = resp.getErrorMessage();
             errCode = resp.getResponseCode();
           } catch (CommandNeedRetryException e) {
@@ -143,7 +152,7 @@ public class QueryWorker implements Runnable {
           String jobId = mquery.getJobId() == null ? "" : mquery.getJobId();
           String tid = ti.hm.get(tiKey);
           if(!jobId.contains(tid)) {
-            mquery.setJobId(jobId + ";" + tid);
+            mquery.setJobId(jobId + tid + ";");
             qs.updateQuery(mquery);
           }
         }
@@ -154,23 +163,38 @@ public class QueryWorker implements Runnable {
   private void finish() {
 
     if(mquery.getErrorCode() == null || mquery.getErrorCode() == 0){
-      this.mquery.setStatus(MQuery.Status.FINISHED);
+      mquery.setStatus(MQuery.Status.FINISHED);
     } else {
-      this.mquery.setStatus(MQuery.Status.FAILED);
+      mquery.setStatus(MQuery.Status.FAILED);
     }
 
     HiveHistoryViewer hv = new HiveHistoryViewer(historyFile);
 
     l4j.debug("finish worker:" + hv.getSessionId());
 
+    Pattern pattern = Pattern.compile("Map-Reduce Framework.CPU time spent \\(ms\\):(\\d+),");
+
+    int ms = 0;
+
     for (String taskKey : hv.getTaskInfoMap().keySet()) {
       TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
       for (String tiKey : ti.hm.keySet()) {
         if (tiKey.equalsIgnoreCase("TASK_COUNTERS")) {
           l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
+
+          Matcher matcher = pattern.matcher(ti.hm.get(tiKey));
+          if(matcher.find()) {
+            try{
+              ms += Integer.parseInt(matcher.group(1));
+            }catch(NumberFormatException e){
+              l4j.error(matcher.group(1) + " is not int");
+            }
+          }
         }
       }
     }
+
+    mquery.setCpuTime(ms);
 
     qs.updateQuery(mquery);
   }

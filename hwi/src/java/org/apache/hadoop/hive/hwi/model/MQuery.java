@@ -32,6 +32,10 @@ public class MQuery {
 
   private Date updated;
 
+  private Integer cpuTime;
+
+  private Integer totalTime;
+
   public String getName() {
     return name;
   }
@@ -134,6 +138,22 @@ public class MQuery {
 
   public void setJobId(String jobId) {
     this.jobId = jobId;
+  }
+
+  public Integer getCpuTime() {
+    return cpuTime;
+  }
+
+  public void setCpuTime(Integer cpuTime) {
+    this.cpuTime = cpuTime;
+  }
+
+  public Integer getTotalTime() {
+    return totalTime;
+  }
+
+  public void setTotalTime(Integer totalTime) {
+    this.totalTime = totalTime;
   }
 
 }
