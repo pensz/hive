@@ -13,20 +13,18 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
---%>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page import="java.util.TimeZone"%>
-<%@page import="java.util.Calendar"%>
-<%@page import="java.util.Date"%>
-<%@page import="java.text.SimpleDateFormat" %>
-<%@page import="java.util.concurrent.ThreadPoolExecutor" %>
-<%@page import="com.sun.org.apache.bcel.internal.generic.NEW"%>
-<%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
-<%@page import="org.apache.hadoop.hive.hwi.*"%>
-<%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
-<%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
-<%@page errorPage="error_page.jsp"%>
-<%
+--%><%@page import="java.text.SimpleDateFormat"
+import="java.util.TimeZone"
+import="java.util.Calendar"
+import="java.util.Date"
+import="java.text.SimpleDateFormat" 
+import="java.util.concurrent.ThreadPoolExecutor" 
+import="com.sun.org.apache.bcel.internal.generic.NEW"
+import="org.apache.hadoop.hive.hwi.model.MQuery"
+import="org.apache.hadoop.hive.hwi.*"
+import="org.apache.hadoop.hive.conf.HiveConf"
+import="org.apache.hadoop.hive.ql.session.SessionState"
+errorPage="error_page.jsp" %><%
     
     String action = request.getParameter("action");
     
@@ -66,7 +64,13 @@
         
 	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
 	    //rd.forward(request, response);
-	    response.sendRedirect("query_info.jsp?id=" + mquery.getId());
+        
+        if ("json".equals(request.getParameter("type"))) {
+            out.println("{\"id\":" + mquery.getId() + "}");
+            return;
+        } else {
+            response.sendRedirect("query_info.jsp?id=" + mquery.getId());
+        }
     }
 %>
 <!DOCTYPE html>
