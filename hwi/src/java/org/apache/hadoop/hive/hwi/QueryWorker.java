@@ -139,19 +139,9 @@ public class QueryWorker implements Runnable {
   }
 
   protected void running() {
-    HiveHistoryViewer hv = null;
+    HiveHistoryViewer hv = HWIUtil.getHiveHistoryViewer(historyFile);
 
-    /*
-    if (historyFile != null) {
-      try {
-        hv = new HiveHistoryViewer(historyFile);
-      } catch (Exception e) {
-        l4j.error(e.getMessage());
-      }
-    }
-    */
-
-    if(hv != null){
+    if (hv != null) {
       l4j.debug("running worker:" + hv.getSessionId());
 
       for (String taskKey : hv.getTaskInfoMap().keySet()) {
@@ -176,17 +166,7 @@ public class QueryWorker implements Runnable {
    */
   private void finish() {
 
-    HiveHistoryViewer hv = null;
-
-    /*
-    if (historyFile != null) {
-      try {
-        hv = new HiveHistoryViewer(historyFile);
-      } catch (Exception e) {
-        l4j.error(e.getMessage());
-      }
-    }
-    */
+    HiveHistoryViewer hv = HWIUtil.getHiveHistoryViewer(historyFile);
 
     if (hv != null) {
       l4j.debug("finish worker:" + hv.getSessionId());
@@ -213,7 +193,9 @@ public class QueryWorker implements Runnable {
         }
       }
 
-      mquery.setCpuTime(ms);
+      if(ms > 0) {
+        mquery.setCpuTime(ms);
+      }
     }
 
     if (mquery.getErrorCode() == null || mquery.getErrorCode() == 0) {
@@ -247,14 +229,19 @@ public class QueryWorker implements Runnable {
         }
 
         String postData =
-            "id=" + URLEncoder.encode(this.mquery.getId().toString(), "UTF-8")
-            + "&status=" +  URLEncoder.encode(this.mquery.getStatus().toString(), "UTF-8")
-            + "&error_code=" + errorCode
-            + "&error_msg=" + errorMsg
-            + "&result_location=" + URLEncoder.encode(this.mquery.getResultLocation(), "UTF-8")
-            + "&result_location_url="
-              + URLEncoder.encode("/hwi/query_result.php?action=download&id=" + this.mquery.getId(), "UTF-8")
-            ;
+            "id="
+                + URLEncoder.encode(this.mquery.getId().toString(), "UTF-8")
+                + "&status="
+                + URLEncoder.encode(this.mquery.getStatus().toString(), "UTF-8")
+                + "&error_code="
+                + errorCode
+                + "&error_msg="
+                + errorMsg
+                + "&result_location="
+                + URLEncoder.encode(this.mquery.getResultLocation(), "UTF-8")
+                + "&result_location_url="
+                + URLEncoder.encode(
+                    "/hwi/query_result.php?action=download&id=" + this.mquery.getId(), "UTF-8");
 
         int trycallbacktimes = 0;
         do {
@@ -271,28 +258,28 @@ public class QueryWorker implements Runnable {
           int responseCode = urlConn.getResponseCode();
 
           if (responseCode == 200) {
-              break;
+            break;
           }
         } while (++trycallbacktimes < 3);
 
 
         /*
-        l4j.debug(urlConn.getResponseMessage());
-        l4j.debug(urlConn.getResponseCode());
-        BufferedReader bin = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), "UTF-8"));
-        String temp;
-        while ((temp = bin.readLine()) != null) {
-            System.out.println(temp);
-        }
-        */
+         * l4j.debug(urlConn.getResponseMessage());
+         * l4j.debug(urlConn.getResponseCode());
+         * BufferedReader bin = new BufferedReader(new InputStreamReader(urlConn.getInputStream(),
+         * "UTF-8"));
+         * String temp;
+         * while ((temp = bin.readLine()) != null) {
+         * System.out.println(temp);
+         * }
+         */
 
       } catch (Exception e) {
-          e.printStackTrace();
+        e.printStackTrace();
       }
     }
 
     l4j.debug(this.mquery.getName() + " state is now FINISHED");
   }
-
 
 }

@@ -58,24 +58,18 @@
 				<jsp:include page="/left_navigation.jsp" />
 			</div><!-- span2 -->
 			<div class="span10">
-				<h4>Query <%=mquery.getName()%></h4>
+				<h2><%=mquery.getName()%></h2>
 
 				<% if (message != null) { %>
 				<div class="alert alert-info"><%= message %></div>
 				<% } %>
 			
 			<dl class="dl-horizontal">
+			<h3>Status</h3>
+			<hr>
 				<dt>Status</dt>
 				<dd><%= mquery.getStatus() %></dd>
-				
-				<dt>Query</dt>
-				<dd>
-				<pre><%= mquery.getQuery() %></pre>
-				</dd>
-				
-				<dt>Callback</dt>
-				<dd><code><%= mquery.getCallback() %></code></dd>
-
+			
 				<dt>JobId</dt>
 				<dd>
 				<% if(mquery.getJobId() != null){ %>
@@ -87,10 +81,20 @@
 				<% } %>
 				
 				<% }else{ %>
-					null
+					..
 				<% } %>
 				</dd>
 				
+			<h3>Basic</h3>
+			<hr>
+				<dt>Query</dt>
+				<dd>
+				<pre><%= mquery.getQuery() %></pre>
+				</dd>
+				
+				<dt>Callback</dt>
+				<dd><code><%= mquery.getCallback() %></code></dd>
+
 				<dt>Result location</dt>
 				<dd>
                 <code><%= mquery.getResultLocation() %></code>
@@ -110,16 +114,17 @@
                 
                 <dt>Updated</dt>
                 <dd><%= mquery.getUpdated() %></dd>
-                
-                
-                <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
+
+			<h3>Stats</h3>
+			<hr>
                 <dt>Cpu Time</dt>
-                <dd><%= Utilities.formatMsecToStr(mquery.getCpuTime()) %></dd>
+                <dd><%= mquery.getCpuTime() == null ? ".." : Utilities.formatMsecToStr(mquery.getCpuTime()) %></dd>
                 
                 <dt>Total Time</dt>
-                <dd><%= Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
+                <dd><%= mquery.getTotalTime() == null ? ".." : Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
                 
-                <dt>Save Time</dt>
+                <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
+                <dt>Saved Time</dt>
                 <dd><%= Utilities.formatMsecToStr(Math.abs(mquery.getCpuTime() - mquery.getTotalTime())) %></dd>
                 <% } %>
 			</dl>

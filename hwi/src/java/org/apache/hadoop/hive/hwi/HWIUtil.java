@@ -1,8 +1,14 @@
 package org.apache.hadoop.hive.hwi;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.history.HiveHistoryViewer;
 
 public class HWIUtil {
+
+  protected static final Log l4j = LogFactory.getLog(HWIUtil.class
+      .getName());
 
   /*
    * mapred.job.tracker could be host:port or just local
@@ -34,4 +40,19 @@ public class HWIUtil {
     return "http://" + jtparts[0] + ":" + jthttpParts[1] + "/jobdetails.jsp?jobid=" + jobid
         + "&refresh=30";
   }
+
+  public static HiveHistoryViewer getHiveHistoryViewer(String historyFile) {
+    HiveHistoryViewer hv = null;
+
+    if (historyFile != null) {
+      try {
+        hv = new HiveHistoryViewer(historyFile);
+      } catch (Exception e) {
+        l4j.error(e.getMessage());
+      }
+    }
+
+    return hv;
+  }
+
 }
