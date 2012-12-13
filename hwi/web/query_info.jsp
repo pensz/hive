@@ -68,7 +68,7 @@
 			<h3>Status</h3>
 			<hr>
 				<dt>Status</dt>
-				<dd><%= mquery.getStatus() %></dd>
+				<dd><%= mquery.getStatus() == null ? "--" : mquery.getStatus() %></dd>
 			
 				<dt>JobId</dt>
 				<dd>
@@ -81,7 +81,7 @@
 				<% } %>
 				
 				<% }else{ %>
-					..
+					--
 				<% } %>
 				</dd>
 				
@@ -89,39 +89,39 @@
 			<hr>
 				<dt>Query</dt>
 				<dd>
-				<pre><%= mquery.getQuery() %></pre>
+				<pre><%= mquery.getQuery() == null ? "--" : mquery.getQuery() %></pre>
 				</dd>
 				
 				<dt>Callback</dt>
-				<dd><code><%= mquery.getCallback() %></code></dd>
+				<dd><code><%= mquery.getCallback() == null ? "--" : mquery.getCallback() %></code></dd>
 
 				<dt>Result location</dt>
 				<dd>
-                <code><%= mquery.getResultLocation() %></code>
+                <code><%= mquery.getResultLocation() == null ? "--" : mquery.getResultLocation() %></code>
                 <% if (mquery.getStatus().equals(MQuery.Status.FINISHED)) { %>
                 <a class="btn btn-small" href="query_result.jsp?id=<%= mquery.getId() %>" >View result</a>
                 <% } %>
 				</dd>
 			
 				<dt>Error message</dt>
-				<dd><%= mquery.getErrorMsg() %></dd>
+				<dd><%= mquery.getErrorMsg() == null ? "--" : mquery.getErrorMsg() %></dd>
 				
 				<dt>Error code</dt>
-                <dd><%= mquery.getErrorCode() %></dd>
+                <dd><%= mquery.getErrorCode() == null ? "--" : mquery.getErrorCode() %></dd>
                 
                 <dt>Created</dt>
-                <dd><%= mquery.getCreated() %></dd>
+                <dd><%= mquery.getCreated() == null ? "--" : mquery.getCreated() %></dd>
                 
                 <dt>Updated</dt>
-                <dd><%= mquery.getUpdated() %></dd>
+                <dd><%= mquery.getUpdated() == null ? "--" : mquery.getUpdated()%></dd>
 
 			<h3>Stats</h3>
 			<hr>
                 <dt>Cpu Time</dt>
-                <dd><%= mquery.getCpuTime() == null ? ".." : Utilities.formatMsecToStr(mquery.getCpuTime()) %></dd>
+                <dd><%= mquery.getCpuTime() == null ? "--" : Utilities.formatMsecToStr(mquery.getCpuTime()) %></dd>
                 
                 <dt>Total Time</dt>
-                <dd><%= mquery.getTotalTime() == null ? ".." : Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
+                <dd><%= mquery.getTotalTime() == null ? "--" : Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
                 
                 <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
                 <dt>Saved Time</dt>
