@@ -62,9 +62,6 @@ errorPage="error_page.jsp" %><%
         QueryManager qm = (QueryManager) application.getAttribute("qm");
         qm.submit(mquery);
         
-	    //RequestDispatcher rd = application.getRequestDispatcher("query_manage.jsp?id=" + mquery.getId());
-	    //rd.forward(request, response);
-        
         if ("json".equals(request.getParameter("type"))) {
             out.println("{\"id\":" + mquery.getId() + "}");
             return;

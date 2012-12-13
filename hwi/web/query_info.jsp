@@ -74,7 +74,7 @@
 				</dd>
 				
 				<dt>Callback</dt>
-				<dd><%= mquery.getCallback() %></dd>
+				<dd><code><%= mquery.getCallback() %></code></dd>
 
 				<dt>JobId</dt>
 				<dd>
@@ -93,7 +93,7 @@
 				
 				<dt>Result location</dt>
 				<dd>
-                <%= mquery.getResultLocation() %>
+                <code><%= mquery.getResultLocation() %></code>
                 <% if (mquery.getStatus().equals(MQuery.Status.FINISHED)) { %>
                 <a class="btn btn-small" href="query_result.jsp?id=<%= mquery.getId() %>" >View result</a>
                 <% } %>
@@ -104,6 +104,13 @@
 				
 				<dt>Error code</dt>
                 <dd><%= mquery.getErrorCode() %></dd>
+                
+                <dt>Created</dt>
+                <dd><%= mquery.getCreated() %></dd>
+                
+                <dt>Updated</dt>
+                <dd><%= mquery.getUpdated() %></dd>
+                
                 
                 <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
                 <dt>Cpu Time</dt>
