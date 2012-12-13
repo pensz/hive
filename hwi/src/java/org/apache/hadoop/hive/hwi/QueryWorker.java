@@ -141,6 +141,7 @@ public class QueryWorker implements Runnable {
   protected void running() {
     HiveHistoryViewer hv = null;
 
+    /*
     if (historyFile != null) {
       try {
         hv = new HiveHistoryViewer(historyFile);
@@ -148,6 +149,7 @@ public class QueryWorker implements Runnable {
         l4j.error(e.getMessage());
       }
     }
+    */
 
     if(hv != null){
       l4j.debug("running worker:" + hv.getSessionId());
@@ -168,10 +170,15 @@ public class QueryWorker implements Runnable {
     }
   }
 
+  /**
+   * query finished
+   *
+   */
   private void finish() {
 
     HiveHistoryViewer hv = null;
 
+    /*
     if (historyFile != null) {
       try {
         hv = new HiveHistoryViewer(historyFile);
@@ -179,6 +186,7 @@ public class QueryWorker implements Runnable {
         l4j.error(e.getMessage());
       }
     }
+    */
 
     if (hv != null) {
       l4j.debug("finish worker:" + hv.getSessionId());
