@@ -123,7 +123,7 @@
                 <dt>Total Time</dt>
                 <dd><%= mquery.getTotalTime() == null ? ".." : Utilities.formatMsecToStr(mquery.getTotalTime()) %></dd>
                 
-                <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() < mquery.getTotalTime() ){ %>
+                <% if(mquery.getCpuTime() != null && mquery.getCpuTime() > 0 && mquery.getCpuTime() > mquery.getTotalTime() ){ %>
                 <dt>Saved Time</dt>
                 <dd><span class="badge badge-warning"><%= Utilities.formatMsecToStr(Math.abs(mquery.getCpuTime() - mquery.getTotalTime())) %></span></dd>
                 <% } %>
