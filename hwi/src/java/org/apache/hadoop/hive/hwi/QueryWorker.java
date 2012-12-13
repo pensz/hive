@@ -140,8 +140,13 @@ public class QueryWorker implements Runnable {
       return;
     }
 
-    HiveHistoryViewer hv = new HiveHistoryViewer(historyFile);
-
+    HiveHistoryViewer hv = null;
+    try{
+       hv = new HiveHistoryViewer(historyFile);
+    }catch(Exception e){
+      l4j.error(e.getMessage());
+      return;
+    }
 
     l4j.debug("running worker:" + hv.getSessionId());
 
