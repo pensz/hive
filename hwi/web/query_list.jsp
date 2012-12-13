@@ -77,7 +77,12 @@ List<MQuery> mquerys = qs.getQuerys();
 							<td>
                             <code><%= querySummary %></code>
                             <% if (queryCutted) { %>
-                            <i class="icon-plus-sign" data-content="<%= query %>" data-placement="bottom" rel="popover" href="#" data-original-title="Query"></i>
+                            <i class="icon-plus-sign" data-content="<%= 
+                            query
+                            .replaceAll("\"", "&quot;")
+                            .replaceAll(">", "&gt;")
+                            .replaceAll("<", "&lt;")
+                            %>" data-placement="bottom" rel="popover" href="#" data-original-title="Query"></i>
                             <% } %>
                             </td>
 							<td>
