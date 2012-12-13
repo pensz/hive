@@ -68,8 +68,10 @@ public class QueryWorker implements Runnable {
 
     String name = mquery.getName();
 
-    // expect one return per query
-    String queryStr = mquery.getQuery();
+    // query is not safe ! safe it !
+    String queryStr = HWIUtil.getSafeQuery(mquery.getQuery());
+    l4j.info("safe query:" + queryStr);
+
     String[] queries = queryStr.split(";");
     int querylen = queries.length;
 

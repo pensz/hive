@@ -76,7 +76,7 @@
 				
 				<% for(String jobId : jobIds){  %>
 					<% if(!jobId.equals("")){ %>
-					<a href="<%= HWIUtil.getJobTrackerURL(hiveConf, jobId) %>" target="_blank"><%= jobId %></a>
+					<a href="<%= HWIUtil.getJobTrackerURL(hiveConf, jobId) %>" target="_blank"><%= jobId %></a><br/>
 					<% } %>
 				<% } %>
 				

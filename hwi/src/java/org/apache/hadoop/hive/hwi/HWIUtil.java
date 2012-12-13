@@ -55,4 +55,9 @@ public class HWIUtil {
     return hv;
   }
 
+  public static String getSafeQuery(String query){
+    query = query.replaceAll("(\r\n|\n)", " ");
+    return query;
+  }
+
 }
