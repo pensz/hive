@@ -45,7 +45,7 @@ public class QueryWorker implements Runnable {
     return mquery.getStatus();
   }
 
-  private void init(){
+  private void init() {
     hiveConf = new HiveConf(SessionState.class);
 
     SessionState.start(hiveConf);
@@ -136,29 +136,29 @@ public class QueryWorker implements Runnable {
   }
 
   protected void running() {
-    if (historyFile == null) {
-      return;
-    }
-
     HiveHistoryViewer hv = null;
-    try{
-       hv = new HiveHistoryViewer(historyFile);
-    }catch(Exception e){
-      l4j.error(e.getMessage());
-      return;
+
+    if (historyFile != null) {
+      try {
+        hv = new HiveHistoryViewer(historyFile);
+      } catch (Exception e) {
+        l4j.error(e.getMessage());
+      }
     }
 
-    l4j.debug("running worker:" + hv.getSessionId());
+    if(hv != null){
+      l4j.debug("running worker:" + hv.getSessionId());
 
-    for (String taskKey : hv.getTaskInfoMap().keySet()) {
-      TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
-      for (String tiKey : ti.hm.keySet()) {
-        if (tiKey.equalsIgnoreCase("TASK_HADOOP_ID")) {
-          String jobId = mquery.getJobId() == null ? "" : mquery.getJobId();
-          String tid = ti.hm.get(tiKey);
-          if(!jobId.contains(tid)) {
-            mquery.setJobId(jobId + tid + ";");
-            qs.updateQuery(mquery);
+      for (String taskKey : hv.getTaskInfoMap().keySet()) {
+        TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
+        for (String tiKey : ti.hm.keySet()) {
+          if (tiKey.equalsIgnoreCase("TASK_HADOOP_ID")) {
+            String jobId = mquery.getJobId() == null ? "" : mquery.getJobId();
+            String tid = ti.hm.get(tiKey);
+            if (!jobId.contains(tid)) {
+              mquery.setJobId(jobId + tid + ";");
+              qs.updateQuery(mquery);
+            }
           }
         }
       }
@@ -167,39 +167,49 @@ public class QueryWorker implements Runnable {
 
   private void finish() {
 
-    if(mquery.getErrorCode() == null || mquery.getErrorCode() == 0){
-      mquery.setStatus(MQuery.Status.FINISHED);
-    } else {
-      mquery.setStatus(MQuery.Status.FAILED);
+    HiveHistoryViewer hv = null;
+
+    if (historyFile != null) {
+      try {
+        hv = new HiveHistoryViewer(historyFile);
+      } catch (Exception e) {
+        l4j.error(e.getMessage());
+      }
     }
 
-    HiveHistoryViewer hv = new HiveHistoryViewer(historyFile);
+    if (hv != null) {
+      l4j.debug("finish worker:" + hv.getSessionId());
 
-    l4j.debug("finish worker:" + hv.getSessionId());
+      Pattern pattern = Pattern.compile("Map-Reduce Framework.CPU time spent \\(ms\\):(\\d+),");
 
-    Pattern pattern = Pattern.compile("Map-Reduce Framework.CPU time spent \\(ms\\):(\\d+),");
+      int ms = 0;
 
-    int ms = 0;
+      for (String taskKey : hv.getTaskInfoMap().keySet()) {
+        TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
+        for (String tiKey : ti.hm.keySet()) {
+          if (tiKey.equalsIgnoreCase("TASK_COUNTERS")) {
+            l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
 
-    for (String taskKey : hv.getTaskInfoMap().keySet()) {
-      TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
-      for (String tiKey : ti.hm.keySet()) {
-        if (tiKey.equalsIgnoreCase("TASK_COUNTERS")) {
-          l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
-
-          Matcher matcher = pattern.matcher(ti.hm.get(tiKey));
-          if(matcher.find()) {
-            try{
-              ms += Integer.parseInt(matcher.group(1));
-            }catch(NumberFormatException e){
-              l4j.error(matcher.group(1) + " is not int");
+            Matcher matcher = pattern.matcher(ti.hm.get(tiKey));
+            if (matcher.find()) {
+              try {
+                ms += Integer.parseInt(matcher.group(1));
+              } catch (NumberFormatException e) {
+                l4j.error(matcher.group(1) + " is not int");
+              }
             }
           }
         }
       }
+
+      mquery.setCpuTime(ms);
     }
 
-    mquery.setCpuTime(ms);
+    if (mquery.getErrorCode() == null || mquery.getErrorCode() == 0) {
+      mquery.setStatus(MQuery.Status.FINISHED);
+    } else {
+      mquery.setStatus(MQuery.Status.FAILED);
+    }
 
     qs.updateQuery(mquery);
   }
