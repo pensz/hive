@@ -1,8 +1,12 @@
 package org.apache.hadoop.hive.hwi;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.history.HiveHistory.TaskInfo;
 import org.apache.hadoop.hive.ql.history.HiveHistoryViewer;
 
 public class HWIUtil {
@@ -18,7 +22,7 @@ public class HWIUtil {
    * chose the first available port for the JobTracker, HTTP port will can not
    * determine it.
    */
-  public static String getJobTrackerURL(HiveConf conf, String jobid){
+  public static String getJobTrackerURL(HiveConf conf, String jobid) {
     String jt = conf.get("mapred.job.tracker");
     String jth = conf.get("mapred.job.tracker.http.address");
     String[] jtparts = null;
@@ -42,20 +46,75 @@ public class HWIUtil {
   }
 
   public static HiveHistoryViewer getHiveHistoryViewer(String historyFile) {
-    HiveHistoryViewer hv = null;
+    if (historyFile == null) {
+      return null;
+    }
 
-    if (historyFile != null) {
-      try {
-        hv = new HiveHistoryViewer(historyFile);
-      } catch (Exception e) {
-        l4j.error(e.getMessage());
+    try {
+      HiveHistoryViewer hv = new HiveHistoryViewer(historyFile);
+      return hv;
+    } catch (Exception e) {
+      l4j.error(e.getMessage());
+      return null;
+    }
+
+  }
+
+  public static String getJobId(HiveHistoryViewer hv) {
+    if (hv == null) {
+      return null;
+    }
+
+    String jobId = "";
+
+    for (String taskKey : hv.getTaskInfoMap().keySet()) {
+      TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
+      for (String tiKey : ti.hm.keySet()) {
+        l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
+
+        if (tiKey.equalsIgnoreCase("TASK_HADOOP_ID")) {
+          String tid = ti.hm.get(tiKey);
+          if (!jobId.contains(tid)) {
+            jobId = jobId + tid + ";";
+          }
+        }
       }
     }
 
-    return hv;
+    return jobId;
   }
 
-  public static String getSafeQuery(String query){
+  public static Integer getCpuTime(HiveHistoryViewer hv) {
+    if (hv == null) {
+      return null;
+    }
+
+    int cpuTime = 0;
+
+    Pattern pattern = Pattern.compile("Map-Reduce Framework.CPU time spent \\(ms\\):(\\d+),");
+
+    for (String taskKey : hv.getTaskInfoMap().keySet()) {
+      TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
+      for (String tiKey : ti.hm.keySet()) {
+        if (tiKey.equalsIgnoreCase("TASK_COUNTERS")) {
+          l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
+
+          Matcher matcher = pattern.matcher(ti.hm.get(tiKey));
+          if (matcher.find()) {
+            try {
+              cpuTime += Integer.parseInt(matcher.group(1));
+            } catch (NumberFormatException e) {
+              l4j.error(matcher.group(1) + " is not int");
+            }
+          }
+        }
+      }
+    }
+
+    return cpuTime;
+  }
+
+  public static String getSafeQuery(String query) {
     query = query.replaceAll("(\r\n|\n)", " ");
     return query;
   }

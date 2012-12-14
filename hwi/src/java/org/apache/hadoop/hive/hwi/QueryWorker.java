@@ -4,8 +4,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +12,6 @@ import org.apache.hadoop.hive.hwi.model.MQuery;
 import org.apache.hadoop.hive.hwi.model.MQuery.Status;
 import org.apache.hadoop.hive.ql.CommandNeedRetryException;
 import org.apache.hadoop.hive.ql.Driver;
-import org.apache.hadoop.hive.ql.history.HiveHistory.TaskInfo;
 import org.apache.hadoop.hive.ql.history.HiveHistoryViewer;
 import org.apache.hadoop.hive.ql.processors.CommandProcessor;
 import org.apache.hadoop.hive.ql.processors.CommandProcessorFactory;
@@ -143,23 +140,15 @@ public class QueryWorker implements Runnable {
   protected void running() {
     HiveHistoryViewer hv = HWIUtil.getHiveHistoryViewer(historyFile);
 
-    if (hv != null) {
-      l4j.debug("running worker:" + hv.getSessionId());
+    String jobId = HWIUtil.getJobId(hv);
 
-      for (String taskKey : hv.getTaskInfoMap().keySet()) {
-        TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
-        for (String tiKey : ti.hm.keySet()) {
-          if (tiKey.equalsIgnoreCase("TASK_HADOOP_ID")) {
-            String jobId = mquery.getJobId() == null ? "" : mquery.getJobId();
-            String tid = ti.hm.get(tiKey);
-            if (!jobId.contains(tid)) {
-              mquery.setJobId(jobId + tid + ";");
-              qs.updateQuery(mquery);
-            }
-          }
-        }
-      }
+    if (jobId != null && !jobId.equals("") && !jobId.equals(mquery.getJobId())) {
+      mquery.setJobId(jobId);
+      //use local querystore, otherwhise transaction may conflict
+      QueryStore qs = new QueryStore(hiveConf);
+      qs.updateQuery(mquery);
     }
+
   }
 
   /**
@@ -170,34 +159,16 @@ public class QueryWorker implements Runnable {
 
     HiveHistoryViewer hv = HWIUtil.getHiveHistoryViewer(historyFile);
 
-    if (hv != null) {
-      l4j.debug("finish worker:" + hv.getSessionId());
+    String jobId = HWIUtil.getJobId(hv);
 
-      Pattern pattern = Pattern.compile("Map-Reduce Framework.CPU time spent \\(ms\\):(\\d+),");
+    if (jobId != null && !"".equals(jobId)) {
+      mquery.setJobId(jobId);
+    }
 
-      int ms = 0;
+    Integer cpuTime = HWIUtil.getCpuTime(hv);
 
-      for (String taskKey : hv.getTaskInfoMap().keySet()) {
-        TaskInfo ti = hv.getTaskInfoMap().get(taskKey);
-        for (String tiKey : ti.hm.keySet()) {
-          if (tiKey.equalsIgnoreCase("TASK_COUNTERS")) {
-            l4j.debug(tiKey + ":" + ti.hm.get(tiKey));
-
-            Matcher matcher = pattern.matcher(ti.hm.get(tiKey));
-            if (matcher.find()) {
-              try {
-                ms += Integer.parseInt(matcher.group(1));
-              } catch (NumberFormatException e) {
-                l4j.error(matcher.group(1) + " is not int");
-              }
-            }
-          }
-        }
-      }
-
-      if(ms > 0) {
-        mquery.setCpuTime(ms);
-      }
+    if (cpuTime != null && cpuTime > 0) {
+      mquery.setCpuTime(cpuTime);
     }
 
     if (mquery.getErrorCode() == null || mquery.getErrorCode() == 0) {
@@ -206,7 +177,7 @@ public class QueryWorker implements Runnable {
       mquery.setStatus(MQuery.Status.FAILED);
     }
 
-    this.callback();
+    callback();
 
     qs.updateQuery(mquery);
   }
