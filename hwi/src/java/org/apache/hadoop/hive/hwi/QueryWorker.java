@@ -161,7 +161,7 @@ public class QueryWorker implements Runnable {
 
     String jobId = HWIUtil.getJobId(hv);
 
-    if (jobId != null && !"".equals(jobId)) {
+    if (jobId != null && !jobId.equals("") && !jobId.equals(mquery.getJobId())) {
       mquery.setJobId(jobId);
     }
 

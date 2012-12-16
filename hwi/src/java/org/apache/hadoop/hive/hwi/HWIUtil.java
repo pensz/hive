@@ -115,7 +115,7 @@ public class HWIUtil {
   }
 
   public static String getSafeQuery(String query) {
-    query = query.replaceAll("(\r\n|\n)", " ");
+    query = query.replaceAll("\r|\n", " ");
     return query;
   }
 

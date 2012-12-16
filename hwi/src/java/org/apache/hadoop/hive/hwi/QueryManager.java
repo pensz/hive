@@ -47,7 +47,7 @@ public class QueryManager implements Runnable {
         }
 
         l4j.debug("go to sleep...");
-        Thread.sleep(1000);
+        Thread.sleep(100);
       } catch (InterruptedException e) {
         l4j.error(e.getMessage());
       }
