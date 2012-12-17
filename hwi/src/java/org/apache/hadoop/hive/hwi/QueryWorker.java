@@ -214,7 +214,7 @@ public class QueryWorker implements Runnable {
                 + URLEncoder.encode(this.mquery.getResultLocation(), "UTF-8")
                 + "&result_location_url="
                 + URLEncoder.encode(
-                    "/hwi/query_result.php?action=download&id=" + this.mquery.getId(), "UTF-8");
+                    "/hwi/query_result.jsp?action=download&id=" + this.mquery.getId(), "UTF-8");
 
         int trycallbacktimes = 0;
         do {
