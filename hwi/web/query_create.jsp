@@ -29,7 +29,7 @@ errorPage="error_page.jsp" %><%
     String action = request.getParameter("action");
     
     if ("add_query".equals(action)) {
-        String queryName = request.getParameter("queryName");
+        String queryName = request.getParameter("query_name");
         String query = request.getParameter("query");
         String callback = request.getParameter("callback");
         
@@ -104,7 +104,7 @@ font-family: Menlo,Monaco,"Courier New",monospace;
                         <div class="control-group">
                             <label class="control-label" for="fldquery">Query Name</label>
                             <div class="controls">
-                                <input id="fldquery" type="text" name="queryName" value="" placeholder="Enter query name" />
+                                <input id="fldquery" type="text" name="query_name" value="" placeholder="Enter query name" />
                             </div>
                         </div>
                         <!-- 
