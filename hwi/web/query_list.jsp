@@ -13,24 +13,43 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
---%>
-<%@ page import="org.apache.hadoop.hive.hwi.*"%>
-<%@page errorPage="error_page.jsp"%>
-<%@page import="org.apache.hadoop.hive.conf.HiveConf"%>
-<%@page import="org.apache.hadoop.hive.ql.session.SessionState"%>
-<%@page import="org.apache.hadoop.hive.hwi.model.MQuery"%>
-<%@page import="javax.jdo.JDOHelper"%>
-<%@page import="java.util.List"%>
-<%
+--%><%@ page import="org.apache.hadoop.hive.hwi.*"
+errorPage="error_page.jsp"
+import="org.apache.hadoop.hive.conf.HiveConf"
+import="org.apache.hadoop.hive.ql.session.SessionState"
+import="org.apache.hadoop.hive.hwi.model.MQuery"
+import="javax.jdo.JDOHelper"
+import="java.util.List"
+import="java.lang.Math"
+%><%
+
 HiveConf hiveConf = new HiveConf(SessionState.class);
 QueryStore qs = new QueryStore(hiveConf);
            
 // Object mquery = JDOHelper.getObjectId(qs.getQuery(1));
+String pageStr = request.getParameter("page");
+int pageInt = 1;
+if (pageStr != null && !"".equals(pageStr.trim())) {
+    pageInt = Integer.parseInt(pageStr);
+}
 
-List<MQuery> mquerys = qs.getQuerys();
+int pageSize = 50;
+Long count = qs.getAllQueryCount();
 
-%>
-<!DOCTYPE html>
+int totalPage = 1;
+if (count % pageSize == 0) {
+    totalPage = (int) (count / pageSize);
+} else {
+    totalPage = (int) (count / pageSize) + 1;
+}
+
+if (pageInt > totalPage) {
+    pageInt = totalPage;
+}
+
+List<MQuery> mquerys = qs.getAllQueries(pageInt, pageSize);
+
+%><!DOCTYPE html>
 <html>
 <head>
 <title>All Queries - Hive Web Interface</title>
@@ -46,8 +65,8 @@ List<MQuery> mquerys = qs.getQuerys();
 			<div class="span10">
 				<h4>All Queries</h4>
 				<div>
-				Total : <%= qs.getQueryCount() %>
-				</div>
+                Total : <%= count %>
+                </div>
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -125,6 +144,15 @@ List<MQuery> mquerys = qs.getQuerys();
 						<%-- } --%>
 					</tbody>
 				</table>
+                
+                <div class="pagination">
+                <ul>
+                <% for (int pageI=1; pageI<=totalPage; pageI++) { %>
+                    <li <% if (pageInt == pageI) { %> class="active"<% } %>><a  href="?page=<%= pageI %>"><%= pageI %></a></li>
+                <% } %>
+                </ul>
+                </div>
+    
 			</div><!-- span8 -->
 		</div><!-- row -->
 	</div><!-- container -->
